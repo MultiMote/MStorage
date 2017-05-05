@@ -1,0 +1,6 @@
+RM			= del /f
+TO_NULL		= 2>NUL
+TARGET_BINARY	= example.exe
+OS_SEPARATOR= \\
+
+-include base.mk

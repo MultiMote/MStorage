@@ -1,0 +1,6 @@
+RM			= rm -f
+TO_NULL		= > /dev/null
+TARGET_BINARY	= example
+OS_SEPARATOR= /
+
+-include base.mk
