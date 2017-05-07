@@ -43,6 +43,8 @@ int main(int argc, char const *argv[]) {
     storage->setGroup("someGroup", group);
 
     print_fieds(storage);
+    // std::cout << *storage << std::endl;
+
     storage->writeToFile("data.mst");
     delete storage; // subfields are deleted automatically
 

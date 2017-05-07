@@ -60,7 +60,7 @@ uint8_t MStorageByte::getByte() { return val; }
 
 double MStorageByte::getDouble() { return (double) val; }
 
-int32_t MStorageByte::getInt() { return (int32_t) val; }
+int32_t MStorageByte::getInt() { return val & 0xFF; }
 
 void MStorageByte::writeData(std::ostream &of) {
     of.put((char)getType());
@@ -160,6 +160,53 @@ void MStorageInt32Array::readData(std::istream &ifs){
     ifs.read((char*)&val_len, sizeof(uint16_t));
     val = new int32_t[val_len];
     ifs.read((char*)val, sizeof(int32_t) * val_len);
+}
+
+///////////////////////////////////////////////////////////////////////
+
+MStorageByteArray::MStorageByteArray(uint8_t *data, uint16_t len){
+    if(!data || len == 0){
+        val_len = 0;
+        val = NULL;
+        return;
+    }
+    val_len = len;
+    val = new uint8_t[val_len];
+    memcpy(val, data, val_len);
+}
+
+MStorageByteArray::~MStorageByteArray(){
+    delete [] val;
+}
+
+MStorageDataType MStorageByteArray::getType(){
+    return MDT_BYTE_ARRAY;
+}
+
+uint8_t *MStorageByteArray::getByteArray(){
+    return val;
+}
+
+uint16_t MStorageByteArray::getLength(){
+    return val_len + sizeof(uint16_t);
+}
+
+uint16_t MStorageByteArray::getArrayLength(){
+    return val_len;
+}
+
+void MStorageByteArray::writeData(std::ostream &of){
+    of.put((char)getType());
+    of.write((char*)&val_len, sizeof(uint16_t));
+    of.write((char*)val, val_len);
+}
+
+void MStorageByteArray::readData(std::istream &ifs){
+    if(val)
+        delete[] val;
+    ifs.read((char*)&val_len, sizeof(uint16_t));
+    val = new uint8_t[val_len];
+    ifs.read((char*)val, val_len);
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -498,3 +545,67 @@ uint16_t MStorage::getLength(){
 }
 
 ///////////////////////////////////////////////////////////////////////
+
+std::ostream &operator<<(std::ostream &os, IMStorageBase &st){
+    switch (st.getType()) {
+    case MDT_INT32:
+        return os << "I32:" <<static_cast<MStorageInt32&>(st).getInt();
+    case MDT_DOUBLE:
+        return os << "D:" << static_cast<MStorageDouble&>(st).getDouble();
+    case MDT_BYTE:
+        os << "B:";
+        os << std::hex << std::setiosflags(std::ios::showbase);
+        os << static_cast<MStorageByte&>(st).getInt();
+        os << std::dec << std::resetiosflags (std::ios::showbase);
+        return os;
+    case MDT_STRING:
+        return os << "STR:\"" << static_cast<MStorageString&>(st).getString() << "\"";
+    case MDT_INT32_ARRAY:
+        {
+        MStorageInt32Array& msia = static_cast<MStorageInt32Array&>(st);
+        int32_t* msia_arr = msia.getIntArray();
+        uint16_t msia_len = msia.getArrayLength();
+        os << "I32:[";
+        for (uint16_t i = 0; i < msia_len; ++i) {
+            os << msia_arr[i];
+            if(i + 1 < msia_len)
+                os << ", ";
+        }
+        os << "]";
+        return os;
+        }
+    case MDT_BYTE_ARRAY:
+        {
+        MStorageByteArray& msba = static_cast<MStorageByteArray&>(st);
+        uint8_t* msba_arr = msba.getByteArray();
+        uint16_t msba_len = msba.getArrayLength();
+        os << "B:[";
+        os <<std::hex << std::setiosflags(std::ios::showbase);
+        for (uint16_t i = 0; i < msba_len; ++i) {
+            os << static_cast<int>(msba_arr[i]);
+            if(i + 1 < msba_len)
+                os << ", ";
+        }
+        os << "]";
+        os << std::dec << std::resetiosflags (std::ios::showbase);
+        return os;
+        }
+    case MDT_GROUP:
+        {
+        MStorage& ms = static_cast<MStorage&>(st);
+        MValueMapIterator it = ms.begin();
+        os << "GR[";
+        while(it != ms.end()){
+            os << "\"" << it->first << "\"=>" << *(it->second);
+            it++;
+            if(it != ms.end())
+                os << ", ";
+        }
+        os << "]";
+        return os;
+        }
+    default:
+        break;
+    }
+    return os;
+}

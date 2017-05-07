@@ -6,6 +6,7 @@
 #include <cstring>
 #include <string>
 #include <cstdio>
+#include <iomanip>
 #include <map>
 
 #define MST_HEADER {'M', 'S', 'T', 0xFA, 0x33}
@@ -30,7 +31,6 @@ public:
     virtual void writeData(std::ostream &of) = 0;
     virtual void readData(std::istream &ifs) = 0;
     virtual uint16_t getLength() = 0;
-    //virtual void printValue() = 0;
 };
 
 class IMStorageBasicType : public IMStorageBase {
@@ -112,51 +112,14 @@ private:
 
 class MStorageByteArray : public IMStorageBase {
 public:
-    MStorageByteArray(uint8_t *data, uint16_t len){
-        if(!data || len == 0){
-            val_len = 0;
-            val = NULL;
-            return;
-        }
-        val_len = len;
-        val = new uint8_t[val_len];
-        memcpy(val, data, val_len);
-    }
-
-    virtual ~MStorageByteArray(){
-        delete [] val;
-    }
-
-    MStorageDataType getType(){
-        return MDT_BYTE_ARRAY;
-    }
-
-    uint8_t * getByteArray(){
-        return val;
-    }
-
-    uint16_t getLength(){
-         return val_len + sizeof(uint16_t);
-    }
-
-    uint16_t getArrayLength(){
-        return val_len;
-    }
-
-    void writeData(std::ostream &of){
-        of.put((char)getType());
-        of.write((char*)&val_len, sizeof(uint16_t));
-        of.write((char*)val, val_len);
-    }
-
-    void readData(std::istream &ifs){
-        if(val)
-            delete[] val;
-        ifs.read((char*)&val_len, sizeof(uint16_t));
-        val = new uint8_t[val_len];
-        ifs.read((char*)val, val_len);
-    }
-
+    MStorageByteArray(uint8_t *data, uint16_t len);
+    virtual ~MStorageByteArray();
+    MStorageDataType getType();
+    uint8_t * getByteArray();
+    uint16_t getLength();
+    uint16_t getArrayLength();
+    void writeData(std::ostream &of);
+    void readData(std::istream &ifs);
 private:
     uint8_t *val;
     uint16_t val_len;
@@ -213,6 +176,6 @@ public:
     uint16_t getLength();
 };
 
-
+std::ostream &operator<<(std::ostream &os, IMStorageBase &st);
 
 #endif // MSTORAGE_H
