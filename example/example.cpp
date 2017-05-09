@@ -40,6 +40,11 @@ int main(int argc, char const *argv[]) {
         int32_t _ints[] = {42, 34, 32323, 5573453};
         group->setIntArray("someIntArray", _ints, 4); // array is being copied
 
+    MStorage *groupToMerge = new MStorage();
+        groupToMerge->setDouble("someDouble2", 1.23);
+
+    group->merge(groupToMerge, false);
+
     storage->setGroup("someGroup", group);
 
     print_fieds(storage);

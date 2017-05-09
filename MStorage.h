@@ -147,6 +147,7 @@ public:
     void setByte(const std::string &key, uint8_t val);
     void setString(const std::string &key, std::string val);
     void setGroup(const std::string &key, MStorage *group);
+    void merge(MStorage *group, bool replaceValues);
 
     int32_t getInt(const std::string &key);
     int32_t* getIntArray(const std::string &key, uint16_t *len);

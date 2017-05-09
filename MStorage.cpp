@@ -350,6 +350,16 @@ void MStorage::setGroup(const std::string &key, MStorage *group) {
     insertRaw(key, group);
 }
 
+void MStorage::merge(MStorage *group, bool replaceValues) {
+    MValueMapIterator it = group->begin();
+    while(it != group->end()) {
+        if(replaceValues || !containsKey(it->first)) {
+            insertRaw(it->first, it->second);
+        }
+        it++;
+    }
+}
+
 int32_t MStorage::getInt(const std::string &key) {
     IMStorageBasicType *bval = getBasicType(key);
     return bval ? bval->getInt() : 0;
