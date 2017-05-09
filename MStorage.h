@@ -156,6 +156,7 @@ public:
     std::string getString(const std::string &key);
     MStorage* getGroup(const std::string &key);
 
+    bool containsKey(const std::string &key);
 
     MValueMapIterator begin();
     MValueMapIterator end();

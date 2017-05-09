@@ -2,15 +2,25 @@
 
 ///////////////////////////////////////////////////////////////////////
 
-MStorageInt32::MStorageInt32(int32_t val) { this->val = val; }
+MStorageInt32::MStorageInt32(int32_t val) {
+    this->val = val;
+}
 
-MStorageDataType MStorageInt32::getType() { return MDT_INT32; }
+MStorageDataType MStorageInt32::getType() {
+    return MDT_INT32;
+}
 
-uint8_t MStorageInt32::getByte() { return val & 0xFF; }
+uint8_t MStorageInt32::getByte() {
+    return val & 0xFF;
+}
 
-double MStorageInt32::getDouble() { return (double)val; }
+double MStorageInt32::getDouble() {
+    return (double)val;
+}
 
-int32_t MStorageInt32::getInt() { return val; }
+int32_t MStorageInt32::getInt() {
+    return val;
+}
 
 void MStorageInt32::writeData(std::ostream &of) {
     of.put((char)getType());
@@ -21,21 +31,31 @@ void MStorageInt32::readData(std::istream &ifs) {
     ifs.read((char*)&val, sizeof(int32_t));
 }
 
-uint16_t MStorageInt32::getLength(){
+uint16_t MStorageInt32::getLength() {
     return sizeof(int32_t);
 }
 
 ///////////////////////////////////////////////////////////////////////
 
-MStorageDouble::MStorageDouble(double val) { this->val = val; }
+MStorageDouble::MStorageDouble(double val) {
+    this->val = val;
+}
 
-MStorageDataType MStorageDouble::getType() { return MDT_DOUBLE; }
+MStorageDataType MStorageDouble::getType() {
+    return MDT_DOUBLE;
+}
 
-uint8_t MStorageDouble::getByte() { return ((int32_t)val) & 0xFF; }
+uint8_t MStorageDouble::getByte() {
+    return ((int32_t)val) & 0xFF;
+}
 
-double MStorageDouble::getDouble() { return val; }
+double MStorageDouble::getDouble() {
+    return val;
+}
 
-int32_t MStorageDouble::getInt() { return (int32_t)val; }
+int32_t MStorageDouble::getInt() {
+    return (int32_t)val;
+}
 
 void MStorageDouble::writeData(std::ostream &of) {
     of.put((char)getType());
@@ -46,21 +66,31 @@ void MStorageDouble::readData(std::istream &ifs) {
     ifs.read((char*)&val, sizeof(double));
 }
 
-uint16_t MStorageDouble::getLength(){
+uint16_t MStorageDouble::getLength() {
     return sizeof(double);
 }
 
 ///////////////////////////////////////////////////////////////////////
 
-MStorageByte::MStorageByte(int8_t val) { this->val = val; }
+MStorageByte::MStorageByte(int8_t val) {
+    this->val = val;
+}
 
-MStorageDataType MStorageByte::getType() { return MDT_BYTE; }
+MStorageDataType MStorageByte::getType() {
+    return MDT_BYTE;
+}
 
-uint8_t MStorageByte::getByte() { return val; }
+uint8_t MStorageByte::getByte() {
+    return val;
+}
 
-double MStorageByte::getDouble() { return (double) val; }
+double MStorageByte::getDouble() {
+    return (double) val;
+}
 
-int32_t MStorageByte::getInt() { return val & 0xFF; }
+int32_t MStorageByte::getInt() {
+    return val & 0xFF;
+}
 
 void MStorageByte::writeData(std::ostream &of) {
     of.put((char)getType());
@@ -71,12 +101,11 @@ void MStorageByte::readData(std::istream &ifs) {
     ifs.read((char*)&val, 1);
 }
 
-uint16_t MStorageByte::getLength(){
+uint16_t MStorageByte::getLength() {
     return 1;
 }
 
 ///////////////////////////////////////////////////////////////////////
-
 
 MStorageString::MStorageString(std::string val) {
     this->val = val;
@@ -108,14 +137,14 @@ void MStorageString::readData(std::istream &ifs) {
     delete[] str;
 }
 
-uint16_t MStorageString::getLength(){
+uint16_t MStorageString::getLength() {
     return val.size() + sizeof(uint16_t);
 }
 
 ///////////////////////////////////////////////////////////////////////
 
-MStorageInt32Array::MStorageInt32Array(int32_t *data, uint16_t len){
-    if(!data || len == 0){
+MStorageInt32Array::MStorageInt32Array(int32_t *data, uint16_t len) {
+    if(!data || len == 0) {
         val_len = 0;
         val = NULL;
         return;
@@ -125,27 +154,27 @@ MStorageInt32Array::MStorageInt32Array(int32_t *data, uint16_t len){
     memcpy(val, data, sizeof(uint32_t) * val_len);
 }
 
-MStorageInt32Array::~MStorageInt32Array(){
+MStorageInt32Array::~MStorageInt32Array() {
     delete[] val;
 }
 
-MStorageDataType MStorageInt32Array::getType(){
+MStorageDataType MStorageInt32Array::getType() {
     return MDT_INT32_ARRAY;
 }
 
-int32_t *MStorageInt32Array::getIntArray(){
+int32_t *MStorageInt32Array::getIntArray() {
     return val;
 }
 
-uint16_t MStorageInt32Array::getLength(){
+uint16_t MStorageInt32Array::getLength() {
     return sizeof(int32_t) * val_len + sizeof(uint16_t);
 }
 
-uint16_t MStorageInt32Array::getArrayLength(){
+uint16_t MStorageInt32Array::getArrayLength() {
     return val_len;
 }
 
-void MStorageInt32Array::writeData(std::ostream &of){
+void MStorageInt32Array::writeData(std::ostream &of) {
     of.put((char)getType());
     of.write((char*)&val_len, sizeof(uint16_t));
     for(size_t pos = 0; pos < val_len; ++pos) {
@@ -153,7 +182,7 @@ void MStorageInt32Array::writeData(std::ostream &of){
     }
 }
 
-void MStorageInt32Array::readData(std::istream &ifs){
+void MStorageInt32Array::readData(std::istream &ifs) {
     if(val)
         delete[] val;
 
@@ -164,8 +193,8 @@ void MStorageInt32Array::readData(std::istream &ifs){
 
 ///////////////////////////////////////////////////////////////////////
 
-MStorageByteArray::MStorageByteArray(uint8_t *data, uint16_t len){
-    if(!data || len == 0){
+MStorageByteArray::MStorageByteArray(uint8_t *data, uint16_t len) {
+    if(!data || len == 0) {
         val_len = 0;
         val = NULL;
         return;
@@ -175,33 +204,33 @@ MStorageByteArray::MStorageByteArray(uint8_t *data, uint16_t len){
     memcpy(val, data, val_len);
 }
 
-MStorageByteArray::~MStorageByteArray(){
+MStorageByteArray::~MStorageByteArray() {
     delete [] val;
 }
 
-MStorageDataType MStorageByteArray::getType(){
+MStorageDataType MStorageByteArray::getType() {
     return MDT_BYTE_ARRAY;
 }
 
-uint8_t *MStorageByteArray::getByteArray(){
+uint8_t *MStorageByteArray::getByteArray() {
     return val;
 }
 
-uint16_t MStorageByteArray::getLength(){
+uint16_t MStorageByteArray::getLength() {
     return val_len + sizeof(uint16_t);
 }
 
-uint16_t MStorageByteArray::getArrayLength(){
+uint16_t MStorageByteArray::getArrayLength() {
     return val_len;
 }
 
-void MStorageByteArray::writeData(std::ostream &of){
+void MStorageByteArray::writeData(std::ostream &of) {
     of.put((char)getType());
     of.write((char*)&val_len, sizeof(uint16_t));
     of.write((char*)val, val_len);
 }
 
-void MStorageByteArray::readData(std::istream &ifs){
+void MStorageByteArray::readData(std::istream &ifs) {
     if(val)
         delete[] val;
     ifs.read((char*)&val_len, sizeof(uint16_t));
@@ -232,7 +261,7 @@ int8_t MStorage::writeToFile(std::string fname) {
     return 0;
 }
 
-int8_t MStorage::readFromFile(std::string fname){
+int8_t MStorage::readFromFile(std::string fname) {
     std::ifstream ifs;
     unsigned char mst_header[MST_HEADER_LEN];
 
@@ -251,11 +280,11 @@ int8_t MStorage::readFromFile(std::string fname){
         values.clear();
         uint8_t selfDtype = 0;
         ifs.read((char*)&selfDtype, 1);
-        if(selfDtype != MDT_GROUP){
+        if(selfDtype != MDT_GROUP) {
             fprintf(stderr, "MStorage::%s(): Wrong group data type"
-                            "(0x%02x)!\n", __FUNCTION__, selfDtype);
-           ifs.close();
-           return 3;
+                    "(0x%02x)!\n", __FUNCTION__, selfDtype);
+            ifs.close();
+            return 3;
         }
         readData(ifs);
         ifs.close();
@@ -265,7 +294,7 @@ int8_t MStorage::readFromFile(std::string fname){
     return 4;
 }
 
-void MStorage::insertRaw(const std::string &key, IMStorageBase *val){
+void MStorage::insertRaw(const std::string &key, IMStorageBase *val) {
     size_t klen = key.size();
     if(klen > 0xFF) {
         fprintf(stderr, "MStorage::%s(): Key name is too long (%u), skipping\n", __FUNCTION__, klen);
@@ -284,8 +313,8 @@ void MStorage::insertRaw(const std::string &key, IMStorageBase *val){
 
 }
 
-IMStorageBase *MStorage::getRaw(const std::string &key){
-    if(values.find(key) == end()) {
+IMStorageBase *MStorage::getRaw(const std::string &key) {
+    if(!containsKey(key)) {
         fprintf(stderr, "MStorage::%s(): Value with key \"%s\" not found!\n",
                 __FUNCTION__, key.c_str());
         return NULL;
@@ -298,12 +327,10 @@ void MStorage::setInt(const std::string &key, uint32_t val) {
     insertRaw(key, new MStorageInt32(val));
 }
 
-void MStorage::setIntArray(const std::string &key, int32_t *val, uint16_t len)
-{
+void MStorage::setIntArray(const std::string &key, int32_t *val, uint16_t len) {
     insertRaw(key, new MStorageInt32Array(val, len));
 }
-void MStorage::setByteArray(const std::string &key, uint8_t *val, uint16_t len)
-{
+void MStorage::setByteArray(const std::string &key, uint8_t *val, uint16_t len) {
     insertRaw(key, new MStorageByteArray(val, len));
 }
 
@@ -319,8 +346,7 @@ void MStorage::setString(const std::string &key, std::string val) {
     insertRaw(key, new MStorageString(val));
 }
 
-void MStorage::setGroup(const std::string &key, MStorage *group)
-{
+void MStorage::setGroup(const std::string &key, MStorage *group) {
     insertRaw(key, group);
 }
 
@@ -329,10 +355,9 @@ int32_t MStorage::getInt(const std::string &key) {
     return bval ? bval->getInt() : 0;
 }
 
-int32_t *MStorage::getIntArray(const std::string &key, uint16_t *len)
-{
+int32_t *MStorage::getIntArray(const std::string &key, uint16_t *len) {
     IMStorageBase *bval = getRaw(key);
-    if(!bval){
+    if(!bval) {
         return NULL;
     }
     if(bval->getType() != MDT_INT32_ARRAY) {
@@ -346,10 +371,9 @@ int32_t *MStorage::getIntArray(const std::string &key, uint16_t *len)
     return sval->getIntArray();
 }
 
-uint8_t *MStorage::getByteArray(const std::string &key, uint16_t *len)
-{
+uint8_t *MStorage::getByteArray(const std::string &key, uint16_t *len) {
     IMStorageBase *bval = getRaw(key);
-    if(!bval){
+    if(!bval) {
         return NULL;
     }
     if(bval->getType() != MDT_BYTE_ARRAY) {
@@ -375,7 +399,7 @@ uint8_t MStorage::getByte(const std::string &key) {
 
 std::string MStorage::getString(const std::string &key) {
     IMStorageBase *bval = getRaw(key);
-    if(!bval){
+    if(!bval) {
         return "";
     }
     if(bval->getType() != MDT_STRING) {
@@ -386,10 +410,9 @@ std::string MStorage::getString(const std::string &key) {
     return sval->getString();
 }
 
-MStorage *MStorage::getGroup(const std::string &key)
-{
+MStorage *MStorage::getGroup(const std::string &key) {
     IMStorageBase *bval = getRaw(key);
-    if(!bval){
+    if(!bval) {
         return NULL;
     }
     if(bval->getType() != MDT_GROUP) {
@@ -401,16 +424,19 @@ MStorage *MStorage::getGroup(const std::string &key)
     return sval;
 }
 
-MValueMapIterator MStorage::begin(){
+bool MStorage::containsKey(const std::string &key) {
+    return values.find(key) != end();
+}
+
+MValueMapIterator MStorage::begin() {
     return values.begin();
 }
 
-MValueMapIterator MStorage::end(){
+MValueMapIterator MStorage::end() {
     return values.end();
 }
 
-void MStorage::clear()
-{
+void MStorage::clear() {
     MValueMapIterator it = begin();
     while(it != end()) {
         delete it->second;
@@ -419,16 +445,15 @@ void MStorage::clear()
     values.clear();
 }
 
-void MStorage::erase(const std::string &key){
+void MStorage::erase(const std::string &key) {
     IMStorageBase *bval = getRaw(key);
-    if(bval){
+    if(bval) {
         values.erase(key);
         delete bval;
     }
 }
 
-void MStorage::dbgPrintKeys()
-{
+void MStorage::dbgPrintKeys() {
     MValueMapIterator it = begin();
     printf("MStorage: [ ");
     while(it != end()) {
@@ -456,7 +481,7 @@ IMStorageBase *MStorage::createByID(uint8_t id) {
         return new MStorage();
     default:
         fprintf(stderr, "MStorage::%s(): "
-                        "Unknown data type (0x%02x)!\n", __FUNCTION__, id);
+                "Unknown data type (0x%02x)!\n", __FUNCTION__, id);
         return NULL;
 
     }
@@ -471,17 +496,17 @@ IMStorageBasicType *MStorage::getBasicType(const std::string &key) {
     return bval;
 }
 
-MStorageDataType MStorage::getType(){
+MStorageDataType MStorage::getType() {
     return MDT_GROUP;
 }
 
-void MStorage::writeData(std::ostream &of){
+void MStorage::writeData(std::ostream &of) {
     MValueMapIterator it = begin();
     uint16_t datalen = getLength();
     of.put((char)getType());
     of.write((char*)&datalen, sizeof(uint16_t));
 
-    while(it != end()) {        
+    while(it != end()) {
         size_t klen = it->first.size();
         of.put((char)(klen & 0xFF));
         for(size_t pos = 0; pos < klen; ++pos) {
@@ -493,7 +518,7 @@ void MStorage::writeData(std::ostream &of){
     }
 }
 
-void MStorage::readData(std::istream &ifs){
+void MStorage::readData(std::istream &ifs) {
     uint16_t blockSize = 0;
     uint16_t bytesRead = 0;
 
@@ -523,22 +548,22 @@ void MStorage::readData(std::istream &ifs){
         delete[] key;
     }
 
-    if(bytesRead != blockSize){
+    if(bytesRead != blockSize) {
         fprintf(stderr, "MStorage::%s(): Group block size missmatch "
-                        "(0x%04x instead of 0x%04x)!\n", __FUNCTION__, bytesRead, blockSize);
+                "(0x%04x instead of 0x%04x)!\n", __FUNCTION__, bytesRead, blockSize);
     }
 
 }
 
-uint16_t MStorage::getLength(){
+uint16_t MStorage::getLength() {
     uint16_t sz = 0;
     MValueMapIterator it = begin();
     //sz+=1; // self data type
     while(it != end()) {
-        sz+=1; // key len byte
-        sz+=it->first.size(); // key characters
-        sz+=1; // data type byte
-        sz+=it->second->getLength(); // data len
+        sz += 1; // key len byte
+        sz += it->first.size(); // key characters
+        sz += 1; // data type byte
+        sz += it->second->getLength(); // data len
         it++;
     }
     return sz;
@@ -546,10 +571,10 @@ uint16_t MStorage::getLength(){
 
 ///////////////////////////////////////////////////////////////////////
 
-std::ostream &operator<<(std::ostream &os, IMStorageBase &st){
+std::ostream &operator<<(std::ostream &os, IMStorageBase &st) {
     switch (st.getType()) {
     case MDT_INT32:
-        return os << "I32:" <<static_cast<MStorageInt32&>(st).getInt();
+        return os << "I32:" << static_cast<MStorageInt32&>(st).getInt();
     case MDT_DOUBLE:
         return os << "D:" << static_cast<MStorageDouble&>(st).getDouble();
     case MDT_BYTE:
@@ -560,8 +585,7 @@ std::ostream &operator<<(std::ostream &os, IMStorageBase &st){
         return os;
     case MDT_STRING:
         return os << "STR:\"" << static_cast<MStorageString&>(st).getString() << "\"";
-    case MDT_INT32_ARRAY:
-        {
+    case MDT_INT32_ARRAY: {
         MStorageInt32Array& msia = static_cast<MStorageInt32Array&>(st);
         int32_t* msia_arr = msia.getIntArray();
         uint16_t msia_len = msia.getArrayLength();
@@ -573,14 +597,13 @@ std::ostream &operator<<(std::ostream &os, IMStorageBase &st){
         }
         os << "]";
         return os;
-        }
-    case MDT_BYTE_ARRAY:
-        {
+    }
+    case MDT_BYTE_ARRAY: {
         MStorageByteArray& msba = static_cast<MStorageByteArray&>(st);
         uint8_t* msba_arr = msba.getByteArray();
         uint16_t msba_len = msba.getArrayLength();
         os << "B:[";
-        os <<std::hex << std::setiosflags(std::ios::showbase);
+        os << std::hex << std::setiosflags(std::ios::showbase);
         for (uint16_t i = 0; i < msba_len; ++i) {
             os << static_cast<int>(msba_arr[i]);
             if(i + 1 < msba_len)
@@ -589,13 +612,12 @@ std::ostream &operator<<(std::ostream &os, IMStorageBase &st){
         os << "]";
         os << std::dec << std::resetiosflags (std::ios::showbase);
         return os;
-        }
-    case MDT_GROUP:
-        {
+    }
+    case MDT_GROUP: {
         MStorage& ms = static_cast<MStorage&>(st);
         MValueMapIterator it = ms.begin();
         os << "GR[";
-        while(it != ms.end()){
+        while(it != ms.end()) {
             os << "\"" << it->first << "\"=>" << *(it->second);
             it++;
             if(it != ms.end())
@@ -603,7 +625,7 @@ std::ostream &operator<<(std::ostream &os, IMStorageBase &st){
         }
         os << "]";
         return os;
-        }
+    }
     default:
         break;
     }
